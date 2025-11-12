@@ -23,21 +23,34 @@ header{
   font-size: 2em;
   color: #e06666;
   font-weight: bold;
+  position: relative;
 }
 
-.calendar{
+.images-header{
+  position: absolute;
+  left: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.images-header img{
+  height: 75px;
+  vertical-align: middle;
+}
+
+.calendrier{
   flex: 1;
   display: grid;
   grid-template-rows: auto 1fr;
 }
 
-.day-names, .days{
+.jours, .case-jour{
   display: grid;
   grid-template-columns: repeat(7, 1fr);
   width: 100%;
 }
 
-.day-name{
+.nom-jour{
   text-align: center;
   padding: 10px 0;
   background-color: #f1f1f1;
@@ -45,7 +58,7 @@ header{
   border: 1px solid #ddd;
 }
 
-.day, .empty{
+.jour, .empty{
   border: 1px solid #eee;
   text-align: right;
   padding: 8px 10px;
@@ -53,12 +66,12 @@ header{
   background-color: white;
 }
 
-.day:hover{
+.jour:hover{
   background-color: #ffecec;
   cursor: pointer;
 }
 
-.days{
+.case-jour{
   height: 100%;
   grid-auto-rows: 1fr;
 }
