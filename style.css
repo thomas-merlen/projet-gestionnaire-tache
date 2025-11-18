@@ -1,77 +1,203 @@
-*{
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
-html, body{
-  height: 100%;
-  width: 100%;
-  font-family: Arial, sans-serif;
-}
-
 body{
-  display: flex;
-  flex-direction: column;
-  background-color: #fff;
+  margin: 0;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  background: #0d0f14;
+  color: #e5e5e5;
 }
 
 header{
-  text-align: center;
+  width: 100%;
   padding: 20px 0;
-  background-color: #f8f8f8;
-  font-size: 2em;
-  color: #e06666;
-  font-weight: bold;
-  position: relative;
+  background: linear-gradient(135deg, #12151c, #1c212d);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
 }
 
 .images-header{
-  position: absolute;
-  left: 20px;
-  top: 50%;
-  transform: translateY(-50%);
+  display: flex;
+  justify-content: center;
+  gap: 40px;
 }
 
 .images-header img{
-  height: 75px;
-  vertical-align: middle;
+  width: 90px;
+  height: auto;
+  filter: drop-shadow(0 0 6px rgba(255, 255, 255, 0.2));
+  transition: transform 0.3s ease;
 }
 
-.calendrier{
-  flex: 1;
-  display: grid;
-  grid-template-rows: auto 1fr;
+.images-header img:hover{
+  transform: scale(1.1);
 }
 
-.jours, .case-jour{
-  display: grid;
-  grid-template-columns: repeat(7, 1fr);
-  width: 100%;
+.login{
+  max-width: 450px;
+  margin: 50px auto;
+  padding: 30px;
+  background: #141820;
+  border-radius: 16px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(6px);
 }
 
-.nom-jour{
-  text-align: center;
-  padding: 10px 0;
-  background-color: #f1f1f1;
+fieldset{
+  border: 1px solid #2b3140;
+  border-radius: 12px;
+  padding: 20px;
+}
+
+legend{
+  padding: 0 10px;
+  font-size: 1.2em;
   font-weight: bold;
-  border: 1px solid #ddd;
+  color: #7ab2ff;
 }
 
-.jour, .empty{
-  border: 1px solid #eee;
-  text-align: right;
-  padding: 8px 10px;
+label{
+  font-size: 0.95em;
+  color: #c3c8d4;
+}
+
+input, textarea{
+  width: 100%;
+  margin-top: 8px;
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid #3a3f52;
+  background: #1b1f27;
+  color: #e5e5e5;
+  font-size: 0.95em;
+  transition: border 0.2s;
+}
+
+input:focus, textarea:focus{
+  border-color: #6da8ff;
+  outline: none;
+}
+
+button{
+  width: 100%;
+  padding: 12px;
+  margin-top: 20px;
+  background: #6da8ff;
+  border: none;
+  border-radius: 10px;
   font-size: 1em;
-  background-color: white;
-}
-
-.jour:hover{
-  background-color: #ffecec;
+  color: #0d0f14;
   cursor: pointer;
+  font-weight: bold;
+  transition: background 0.3s, transform 0.2s;
 }
 
-.case-jour{
-  height: 100%;
-  grid-auto-rows: 1fr;
+button:hover{
+  background: #5896f0;
+  transform: translateY(-2px);
+}
+
+.task-container{
+  max-width: 700px;
+  margin: 30px auto;
+  padding: 20px;
+  background: #141820;
+  border-radius: 16px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
+}
+
+.task-container h2{
+  text-align: center;
+  margin-bottom: 20px;
+  color: #7ab2ff;
+}
+
+.no-tasks{
+  text-align: center;
+  color: #888;
+  font-style: italic;
+}
+
+.task-item{
+  background: #1b1f27;
+  border: 1px solid #2b3140;
+  border-radius: 12px;
+  padding: 15px 20px;
+  margin-bottom: 20px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+  transition: transform 0.2s ease;
+}
+
+.task-item:hover{
+  transform: translateY(-3px);
+}
+
+.task-header{
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+  font-weight: bold;
+}
+
+.task-date{
+  color: #9fb7ff;
+}
+
+.task-type{
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 0.9em;
+  color: #0d0f14;
+  font-weight: bold;
+}
+
+.task-type.formelle{
+  background: #7ab2ff;
+}
+.task-type.informelle{
+  background: #6de0b0;
+}
+
+.task-description{
+  margin-bottom: 15px;
+  color: #d6d6d6;
+  line-height: 1.4em;
+}
+
+.delete-btn{
+  background: #ff6b6b;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+  color: #0d0f14;
+  transition: background 0.3s, transform 0.2s;
+}
+
+.delete-btn:hover{
+  background: #ff5252;
+  transform: translateY(-2px);
+}
+
+select{
+    width: 100%;
+    margin-top: 8px;
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid #3a3f52;
+    background: #1b1f27;
+    color: #e5e5e5;
+    font-size: 0.95em;
+    appearance: none; 
+    cursor: pointer;
+    transition: border 0.2s;
+}
+
+select{
+    background-image: url("data:image/svg+xml;utf8,<svg fill='white' height='16' viewBox='0 0 24 24' width='16' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/></svg>");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    background-size: 16px;
+}
+
+select:focus{
+    border-color: #6da8ff;
+    outline: none;
 }
