@@ -11,7 +11,11 @@ if (!taskContainer){
     document.querySelector('.login').after(taskContainer);
 }
 
-let tasks = [];
+let tasks = JSON.parse(localStorage.getItem('tasks')) || [];
+
+function saveTasks(){
+    localStorage.setItem('tasks', JSON.stringify(tasks));
+}
 
 function displayTasks(){
     taskContainer.innerHTML = '<h2>Liste des tâches</h2>';
@@ -52,6 +56,7 @@ function formatDate(dateString){
 
 function deleteTask(index){
     tasks.splice(index, 1);
+    saveTasks(); 
     displayTasks();
 }
 
@@ -85,6 +90,7 @@ form.addEventListener('submit', function(e){
     };
     
     tasks.push(newTask);
+    saveTasks(); 
     
     displayTasks();
     
