@@ -111,8 +111,8 @@ function displayTasks(){
         
         const deleteButtons = task.isRecurring ? `
             <div style="display: flex; gap: 8px;">
-                <button class="delete-btn delete-one" onclick="deleteOccurrence(${task.parentId}, '${taskDateEncoded}')">🗑️ Cette occurrence</button>
-                <button class="delete-btn delete-all" onclick="deleteAllOccurrences(${task.parentId})">🗑️ Toute la série</button>
+                <button class="delete-btn delete-one" onclick="deleteOccurrence(${task.parentId}, '${taskDateEncoded}')">🗑️ Cette tâche</button>
+                <button class="delete-btn delete-all" onclick="deleteAllOccurrences(${task.parentId})">🗑️ Toute la série de tâche</button>
             </div>
         ` : `
             <button class="delete-btn" onclick="deleteTask(${task.parentId})">🗑️ Supprimer</button>
