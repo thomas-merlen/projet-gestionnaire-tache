@@ -3,6 +3,7 @@ const dateInput = document.getElementById('date');
 const timeInput = document.getElementById('time');
 const typeInput = document.getElementById('type');
 const frequencyInput = document.getElementById('frequency');
+const placeInput = document.getElementById('place');
 const messageInput = document.getElementById('message');
 
 let taskContainer = document.querySelector('.task-container');
@@ -34,6 +35,7 @@ function generateRecurringTasks(task){
             time: task.time,
             type: task.type,
             description: task.description,
+            place: task.place,
             parentId: task.id,
             isRecurring: false
         });
@@ -54,13 +56,13 @@ function generateRecurringTasks(task){
                 time: task.time,
                 type: task.type,
                 description: task.description,
+                place: task.place,
                 parentId: task.id,
                 isRecurring: true,
                 frequency: task.frequency
             });
         }
         
-        // Ajouter la fréquence en jours
         currentDate.setDate(currentDate.getDate() + frequencyDays);
     }
     
@@ -75,21 +77,18 @@ function displayTasks(){
         return;
     }
     
-    // Générer toutes les occurrences
     const allOccurrences = [];
     tasks.forEach(task =>{
         const occurrences = generateRecurringTasks(task);
         allOccurrences.push(...occurrences);
     });
     
-    // Trier par date et heure
     const sortedTasks = allOccurrences.sort((a, b) =>{
         const dateTimeA = new Date(a.date + 'T' + a.time);
         const dateTimeB = new Date(b.date + 'T' + b.time);
         return dateTimeA - dateTimeB;
     });
     
-    // Filtrer les tâches futures uniquement
     const now = new Date();
     const futureTasks = sortedTasks.filter(task =>{
         const taskDateTime = new Date(task.date + 'T' + task.time);
@@ -108,7 +107,6 @@ function displayTasks(){
         const frequencyLabel = task.isRecurring ? 
             `<span class="frequency-badge">🔄 ${getFrequencyLabel(task.frequency)}</span>` : '';
         
-        // Encoder la date pour l'utiliser dans l'attribut onclick
         const taskDateEncoded = task.date;
         
         const deleteButtons = task.isRecurring ? `
@@ -125,9 +123,13 @@ function displayTasks(){
                 <span class="task-date">📅 ${formatDate(task.date)} à ${task.time}</span>
                 <span class="task-type ${task.type.toLowerCase()}">${task.type}</span>
             </div>
+
+            <div class="task-place">📍 ${task.place || "Lieu non renseigné"}</div>
+
             <div class="task-description">
                 ${task.description}
             </div>
+
             <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
                 ${frequencyLabel}
                 ${deleteButtons}
@@ -158,17 +160,14 @@ function deleteTask(taskId){
     displayTasks();
 }
 
-// Supprimer une seule occurrence d'une tâche récurrente
 function deleteOccurrence(taskId, occurrenceDate){
     const taskIndex = tasks.findIndex(t => t.id === taskId);
     if (taskIndex === -1) return;
     
-    // Initialiser le tableau des dates exclues si nécessaire
     if (!tasks[taskIndex].excludedDates){
         tasks[taskIndex].excludedDates = [];
     }
     
-    // Ajouter cette date à la liste des exclusions
     if (!tasks[taskIndex].excludedDates.includes(occurrenceDate)){
         tasks[taskIndex].excludedDates.push(occurrenceDate);
     }
@@ -177,7 +176,6 @@ function deleteOccurrence(taskId, occurrenceDate){
     displayTasks();
 }
 
-// Supprimer toute la série de tâches récurrentes
 function deleteAllOccurrences(taskId){
     if (confirm('Voulez-vous vraiment supprimer toute la série de cette tâche récurrente ?')){
         tasks = tasks.filter(task => task.id !== taskId);
@@ -186,7 +184,6 @@ function deleteAllOccurrences(taskId){
     }
 }
 
-// Rendre les fonctions globales
 window.deleteTask = deleteTask;
 window.deleteOccurrence = deleteOccurrence;
 window.deleteAllOccurrences = deleteAllOccurrences;
@@ -199,6 +196,7 @@ form.addEventListener('submit', function(e){
     const type = typeInput.value;
     const frequency = frequencyInput.value || '0';
     const description = messageInput.value;
+    const place = placeInput.value;
     
     if (!date || !time || !type || !description){
         alert('Veuillez remplir tous les champs obligatoires !');
@@ -219,6 +217,7 @@ form.addEventListener('submit', function(e){
         type: type,
         frequency: frequency,
         description: description,
+        place: place, // ⭐ AJOUT DU LIEU
         id: Date.now()
     };
     
@@ -228,7 +227,6 @@ form.addEventListener('submit', function(e){
     displayTasks();
     
     form.reset();
-    
 });
 
 displayTasks();
