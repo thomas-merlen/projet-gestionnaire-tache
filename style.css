@@ -201,3 +201,18 @@ select:focus{
     border-color: #6da8ff;
     outline: none;
 }
+
+select:focus{
+    border-color: #6da8ff;
+    outline: none;
+}
+
+.frequency-badge{
+    display: inline-block;
+    background: #4a5568;
+    color: #e5e5e5;
+    padding: 5px 12px;
+    border-radius: 6px;
+    font-size: 0.85em;
+    font-weight: bold;
+}

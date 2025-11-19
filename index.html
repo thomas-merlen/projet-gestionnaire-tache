@@ -21,7 +21,7 @@
             <fieldset>           
                 <legend>Ajout d'une tâche</legend>
         
-                <label for="username">Date :</label><br>
+                <label for="date">Date :</label><br>
                 <input type="date" id="date" required><br><br>
 
                 <label for="time">Heure :</label><br>
@@ -34,6 +34,14 @@
                     <option value="Informelle">Informelle</option>
                 </select><br><br>
         
+                <label for="frequency">Fréquence de la tâche :</label><br>
+                <select id="frequency">
+                    <option value="0">-- Tâche unique --</option>
+                    <option value="1">Quotidienne</option>
+                    <option value="7">Toutes les semaines</option>
+                    <option value="28">Toutes les 4 semaines</option>
+                </select><br><br>
+
                 <label for="message">Description de la tâche :</label><br>
                 <textarea id="message" rows="5" cols="30" required></textarea><br><br>
             </fieldset>
