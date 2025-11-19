@@ -122,7 +122,7 @@ function displayTasks(){
             <div class="task-header">
                 <span class="task-date">📅 ${formatDate(task.date)} à ${task.time}</span>
                 <span class="task-type ${task.type.toLowerCase()}">${task.type}</span>
-            </div>
+            </div><br>
 
             <div class="task-place">📍 ${task.place || "Lieu non renseigné"}</div>
 
