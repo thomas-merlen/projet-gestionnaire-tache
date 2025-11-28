@@ -19,16 +19,12 @@ function saveTasks(){
     localStorage.setItem('tasks', JSON.stringify(tasks));
 }
 
-// Générer les occurrences d'une tâche récurrente pour 1 an
 function generateRecurringTasks(task){
     const occurrences = [];
     const startDate = new Date(task.date + 'T' + task.time);
     const endDate = new Date(startDate);
-    endDate.setFullYear(endDate.getFullYear() + 1); // Ajouter 1 an
-    
+    endDate.setFullYear(endDate.getFullYear() + 1);
     let currentDate = new Date(startDate);
-    
-    // Si pas de fréquence, c'est une tâche unique
     if (!task.frequency || task.frequency === '0'){
         occurrences.push({
             date: task.date,
@@ -41,15 +37,12 @@ function generateRecurringTasks(task){
         });
         return occurrences;
     }
-    
     const frequencyDays = parseInt(task.frequency);
     const excludedDates = task.excludedDates || [];
-    
-    // Générer les occurrences
+
     while (currentDate <= endDate){
         const dateString = currentDate.toISOString().split('T')[0];
-        
-        // Vérifier si cette date n'est pas exclue
+
         if (!excludedDates.includes(dateString)){
             occurrences.push({
                 date: dateString,
@@ -62,62 +55,62 @@ function generateRecurringTasks(task){
                 frequency: task.frequency
             });
         }
-        
+
         currentDate.setDate(currentDate.getDate() + frequencyDays);
     }
-    
+
     return occurrences;
 }
 
 function displayTasks(){
     taskContainer.innerHTML = '<h2>Liste des tâches</h2>';
-    
+
     if (tasks.length === 0){
         taskContainer.innerHTML += '<p class="no-tasks">Aucune tâche ajoutée pour le moment.</p>';
         return;
     }
-    
+
     const allOccurrences = [];
     tasks.forEach(task =>{
         const occurrences = generateRecurringTasks(task);
         allOccurrences.push(...occurrences);
     });
-    
+
     const sortedTasks = allOccurrences.sort((a, b) =>{
         const dateTimeA = new Date(a.date + 'T' + a.time);
         const dateTimeB = new Date(b.date + 'T' + b.time);
         return dateTimeA - dateTimeB;
     });
-    
+
     const now = new Date();
     const futureTasks = sortedTasks.filter(task =>{
         const taskDateTime = new Date(task.date + 'T' + task.time);
         return taskDateTime >= now;
     });
-    
+
     if (futureTasks.length === 0){
         taskContainer.innerHTML += '<p class="no-tasks">Aucune tâche future.</p>';
         return;
     }
-    
+
     futureTasks.forEach((task) =>{
         const taskElement = document.createElement('div');
         taskElement.className = 'task-item';
-        
+
         const frequencyLabel = task.isRecurring ? 
             `<span class="frequency-badge">🔄 ${getFrequencyLabel(task.frequency)}</span>` : '';
-        
+
         const taskDateEncoded = task.date;
-        
+
         const deleteButtons = task.isRecurring ? `
             <div style="display: flex; gap: 8px;">
                 <button class="delete-btn delete-one" onclick="deleteOccurrence(${task.parentId}, '${taskDateEncoded}')">🗑️ Cette tâche</button>
-                <button class="delete-btn delete-all" onclick="deleteAllOccurrences(${task.parentId})">🗑️ Toute la série de tâche</button>
+                <button class="delete-btn delete-all" onclick="deleteAllOccurrences(${task.parentId})">🗑️ Toute la série</button>
             </div>
         ` : `
             <button class="delete-btn" onclick="deleteTask(${task.parentId})">🗑️ Supprimer</button>
         `;
-        
+
         taskElement.innerHTML = `
             <div class="task-header">
                 <span class="task-date">📅 ${formatDate(task.date)} à ${task.time}</span>
@@ -126,18 +119,32 @@ function displayTasks(){
 
             <div class="task-place">📍 ${task.place || "Lieu non renseigné"}</div>
 
-            <div class="task-description">
-                ${task.description}
-            </div>
+            <div class="task-description">${task.description}</div>
 
             <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
                 ${frequencyLabel}
+                <button class="edit-btn" onclick="editTask(${task.parentId})">✏️ Modifier</button>
                 ${deleteButtons}
             </div>
         `;
         taskContainer.appendChild(taskElement);
     });
 }
+
+function editTask(taskId){
+    const task = tasks.find(t => t.id === taskId);
+    if (!task) return;
+
+    dateInput.value = task.date;
+    timeInput.value = task.time;
+    typeInput.value = task.type;
+    frequencyInput.value = task.frequency;
+    placeInput.value = task.place;
+    messageInput.value = task.description;
+
+    form.dataset.editing = taskId;
+}
+window.editTask = editTask;
 
 function getFrequencyLabel(frequency){
     switch(frequency){
@@ -163,21 +170,21 @@ function deleteTask(taskId){
 function deleteOccurrence(taskId, occurrenceDate){
     const taskIndex = tasks.findIndex(t => t.id === taskId);
     if (taskIndex === -1) return;
-    
+
     if (!tasks[taskIndex].excludedDates){
         tasks[taskIndex].excludedDates = [];
     }
-    
+
     if (!tasks[taskIndex].excludedDates.includes(occurrenceDate)){
         tasks[taskIndex].excludedDates.push(occurrenceDate);
     }
-    
+
     saveTasks();
     displayTasks();
 }
 
 function deleteAllOccurrences(taskId){
-    if (confirm('Voulez-vous vraiment supprimer toute la série de cette tâche récurrente ?')){
+    if (confirm('Voulez-vous vraiment supprimer toute la série ?')){
         tasks = tasks.filter(task => task.id !== taskId);
         saveTasks(); 
         displayTasks();
@@ -190,42 +197,62 @@ window.deleteAllOccurrences = deleteAllOccurrences;
 
 form.addEventListener('submit', function(e){
     e.preventDefault();
-    
+
     const date = dateInput.value;
     const time = timeInput.value;
     const type = typeInput.value;
     const frequency = frequencyInput.value || '0';
     const description = messageInput.value;
     const place = placeInput.value;
-    
+
     if (!date || !time || !type || !description){
         alert('Veuillez remplir tous les champs obligatoires !');
         return;
     }
-    
+
     const selectedDateTime = new Date(date + 'T' + time);
     const now = new Date();
-    
-    if (selectedDateTime < now){
-        alert('⌚ Vous ne pouvez pas ajouter une tâche dans le passé !');
+
+    if (!form.dataset.editing && selectedDateTime < now){
+        alert('Vous ne pouvez pas ajouter une tâche dans le passé !');
         return;
     }
-    
-    const newTask ={
+
+    if (form.dataset.editing){
+        const taskId = parseInt(form.dataset.editing);
+        const taskIndex = tasks.findIndex(t => t.id === taskId);
+
+        if (taskIndex !== -1){
+            tasks[taskIndex].date = date;
+            tasks[taskIndex].time = time;
+            tasks[taskIndex].type = type;
+            tasks[taskIndex].frequency = frequency;
+            tasks[taskIndex].description = description;
+            tasks[taskIndex].place = place;
+        }
+
+        saveTasks();
+        displayTasks();
+
+        form.reset();
+        delete form.dataset.editing;
+        return;
+    }
+
+    const newTask = {
         date: date,
         time: time,
         type: type,
         frequency: frequency,
         description: description,
-        place: place, // ⭐ AJOUT DU LIEU
+        place: place,
         id: Date.now()
     };
-    
+
     tasks.push(newTask);
-    saveTasks(); 
-    
+    saveTasks();
+
     displayTasks();
-    
     form.reset();
 });
 
